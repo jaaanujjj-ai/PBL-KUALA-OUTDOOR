@@ -1,120 +1,9 @@
-// import { Link } from "react-router-dom";
-// import { Button } from "@/components/ui/button";
-// import { Navbar } from "@/components/Navbar";
-// import { Search, ShoppingBag, Users, Shield } from "lucide-react";
-// import heroImage from "@/assets/hero-outdoor.jpg";
-
-// const Index = () => {
-//   return (
-//     <div className="min-h-screen bg-background">
-//       <Navbar />
-      
-//       {/* Hero Section */}
-//       <section className="relative h-[600px] flex items-center justify-center overflow-hidden">
-//         <div 
-//           className="absolute inset-0 bg-cover bg-center"
-//           style={{ backgroundImage: `url(${heroImage})` }}
-//         >
-//           <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/80" />
-//         </div>
-        
-//         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-//           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-//             Rent, List & Trade Outdoor Gear
-//           </h1>
-//           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-//             Connect with fellow outdoor enthusiasts. Find quality used gear or give your equipment a second life.
-//           </p>
-//           <div className="flex gap-4 justify-center flex-wrap">
-//             <Link to="/browse">
-//               <Button size="lg" variant="secondary" className="text-lg">
-//                 Browse Gear
-//               </Button>
-//             </Link>
-//             <Link to="/auth">
-//               <Button size="lg" className="text-lg bg-accent hover:bg-accent/90">
-//                 Get Started
-//               </Button>
-//             </Link>
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* Features Section */}
-//       <section className="py-20 px-4">
-//         <div className="container mx-auto max-w-6xl">
-//           <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-          
-//           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-//             <div className="text-center">
-//               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
-//                 <Users className="h-8 w-8" />
-//               </div>
-//               <h3 className="font-semibold text-lg mb-2">Create Account</h3>
-//               <p className="text-muted-foreground">
-//                 Sign up in seconds and join our community of outdoor enthusiasts
-//               </p>
-//             </div>
-
-//             <div className="text-center">
-//               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
-//                 <ShoppingBag className="h-8 w-8" />
-//               </div>
-//               <h3 className="font-semibold text-lg mb-2">Rent Your Gear</h3>
-//               <p className="text-muted-foreground">
-//                 Rent your Gear for the great adventure ahead
-//               </p>
-//             </div>
-
-//             <div className="text-center">
-//               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
-//                 <Search className="h-8 w-8" />
-//               </div>
-//               <h3 className="font-semibold text-lg mb-2">Browse & Search</h3>
-//               <p className="text-muted-foreground">
-//                 Find exactly what you need with our easy search and filters
-//               </p>
-//             </div>
-
-//             <div className="text-center">
-//               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
-//                 <Shield className="h-8 w-8" />
-//               </div>
-//               <h3 className="font-semibold text-lg mb-2">Connect Safely</h3>
-//               <p className="text-muted-foreground">
-//                 Message sellers directly and arrange secure exchanges
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* CTA Section */}
-//       <section className="py-20 px-4 bg-primary/5">
-//         <div className="container mx-auto max-w-4xl text-center">
-//           <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-//           <p className="text-xl text-muted-foreground mb-8">
-//             Join thousands of outdoor enthusiasts Adventur, Rent, and trading gear
-//           </p>
-//           <Link to="/auth">
-//             <Button size="lg" className="text-lg">
-//               Create Your Account
-//             </Button>
-//           </Link>
-//         </div>
-//       </section>
-//     </div>
-//   );
-// };
-
-// export default Index;
-
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { useContact } from '@/contexts/ContactContext'; // ✅ IMPORT CONTEXT
 import { 
   Search, 
   ShoppingBag, 
@@ -127,11 +16,13 @@ import {
 } from "lucide-react";
 
 const Index = () => {
+  const { contactInfo } = useContact(); // ✅ GUNAKAN CONTEXT
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      {/* ✅ HERO SECTION */}
+      {/* ✅ HERO SECTION - MENGGUNAKAN DATA DARI CONTEXT */}
       <section className="relative h-[600px] flex items-center justify-center bg-gradient-to-r from-green-600 to-blue-600">
         <div className="text-center px-4 max-w-5xl mx-auto text-white">
           {/* Brand Logo */}
@@ -152,11 +43,11 @@ const Index = () => {
             Dari tenda, sleeping bag, hingga perlengkapan mendaki gunung.
           </p>
           
-          {/* Contact Info */}
+          {/* Contact Info - MENGGUNAKAN DATA DARI CONTEXT */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
             <div className="flex items-center gap-2">
               <Phone className="h-5 w-5" />
-              <span>📞 089692854470</span>
+              <span>📞 {contactInfo.phone1}</span>
             </div>
             <div className="hidden sm:block">•</div>
             <div className="flex items-center gap-2">
@@ -171,42 +62,39 @@ const Index = () => {
                 🎒 Browse Equipment
               </Button>
             </Link>
+            {/* ✅ TOMBOL WHATSAPP MENGGUNAKAN NOMOR DARI CONTEXT */}
             <a 
-              href="https://wa.me/6289692854470?text=Halo%20Kuala%20Outdoor"
+              href={`https://wa.me/${contactInfo.phone1.replace(/[^\d]/g, '')}?text=Halo%20Kuala%20Outdoor`}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {/* <Button size="lg" variant="outline" className="text-lg border-white text-white hover:bg-white hover:text-green-600">
-                💬 Chat WhatsApp
-              </Button> */}
               <Button size="lg" className="text-lg bg-green-400 text-white hover:bg-green-500 border-0">
-  💬 Chat WhatsApp
-</Button>
+                💬 Chat WhatsApp
+              </Button>
             </a>
           </div>
         </div>
       </section>
-<br />
-<br />
+<br /> <br />
       {/* Stats Section */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-  <div>
-    <div className="text-3xl font-bold text-green-600 mb-2">Kubu Raya</div>
-    <div className="text-gray-600">Lokasi Strategis</div>
-  </div>
-  <div>
-    <div className="text-3xl font-bold text-blue-600 mb-2">24 Jam</div>
-    <div className="text-gray-600">Fast Response</div>
-  </div>
-  <div>
-    <div className="text-3xl font-bold text-purple-600 mb-2">100%</div>
-    <div className="text-gray-600">Equipment Terawat</div>
-  </div>
-  <div>
-    <div className="text-3xl font-bold text-orange-600 mb-2">Terjangkau</div>
-    <div className="text-gray-600">Harga Rental</div>
-  </div>
-</div>
+        <div>
+          <div className="text-3xl font-bold text-green-600 mb-2">Kubu Raya</div>
+          <div className="text-gray-600">Lokasi Strategis</div>
+        </div>
+        <div>
+          <div className="text-3xl font-bold text-blue-600 mb-2">24 Jam</div>
+          <div className="text-gray-600">Fast Response</div>
+        </div>
+        <div>
+          <div className="text-3xl font-bold text-purple-600 mb-2">100%</div>
+          <div className="text-gray-600">Equipment Terawat</div>
+        </div>
+        <div>
+          <div className="text-3xl font-bold text-orange-600 mb-2">Terjangkau</div>
+          <div className="text-gray-600">Harga Rental</div>
+        </div>
+      </div>
 
       {/* How It Works */}
       <section className="py-20 px-4">
@@ -359,7 +247,7 @@ const Index = () => {
               <CheckCircle className="h-8 w-8 text-green-600 flex-shrink-0 mt-1" />
               <div>
                 <h3 className="font-semibold text-lg mb-2">Lokasi Strategis</h3>
-                <p className="text-gray-600">Mudah dijangkau di Kuala Dua, Kabupaten Kubu Raya</p>
+                <p className="text-gray-600">Mudah dijangkau di {contactInfo.address.split(',')[0]}</p>
               </div>
             </div>
 
@@ -382,7 +270,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section - MENGGUNAKAN DATA DARI CONTEXT */}
       <section className="py-20 px-4 bg-gradient-to-r from-green-600 to-blue-600 text-white">
         <div className="container mx-auto max-w-4xl text-center">
           <div className="mb-8">
@@ -399,8 +287,9 @@ const Index = () => {
                 🎒 Mulai Browse Equipment
               </Button>
             </Link>
+            {/* ✅ TOMBOL WHATSAPP MENGGUNAKAN NOMOR DARI CONTEXT */}
             <a 
-              href="https://wa.me/6289692854470?text=Halo%20Kuala%20Outdoor%20saya%20ingin%20konsultasi"
+              href={`https://wa.me/${contactInfo.phone1.replace(/[^\d]/g, '')}?text=Halo%20Kuala%20Outdoor%20saya%20ingin%20konsultasi`}
               target="_blank"
               rel="noopener noreferrer"
             >

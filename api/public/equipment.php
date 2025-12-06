@@ -1,20 +1,18 @@
 <?php
+// filepath: PBL-KELANA-OUTDOOR/api/public/equipment.php
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Methods: GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Content-Type: application/json; charset=UTF-8");
 
-// Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
-// Enable error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Database configuration
 $host = "localhost";
 $db_name = "kuala_outdoor";
 $username = "root";
@@ -26,6 +24,75 @@ try {
     $pdo->setAttribute(PDO::ATTR_TIMEOUT, 30);
     $pdo->setAttribute(PDO::ATTR_PERSISTENT, false);
     
+    // ✅ HELPER FUNCTION: Get equipment images
+    function getEquipmentImages($pdo, $equipment_id) {
+        $stmt = $pdo->prepare("
+            SELECT image_id, image_url, is_primary, display_order
+            FROM equipment_images
+            WHERE equipment_id = ?
+            ORDER BY is_primary DESC, display_order ASC
+        ");
+        $stmt->execute([$equipment_id]);
+        
+        $images = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $images[] = [
+                'image_id' => (int)$row['image_id'],
+                'image_url' => 'http://localhost/PBL-KELANA-OUTDOOR' . $row['image_url'],
+                'is_primary' => (bool)$row['is_primary'],
+                'display_order' => (int)$row['display_order']
+            ];
+        }
+        
+        return $images;
+    }
+    
+    // ✅ HELPER FUNCTION: Get usage guide steps
+    function getUsageGuide($pdo, $equipment_id) {
+        $stmt = $pdo->prepare("
+            SELECT guide_id, step_number, title, description
+            FROM equipment_usage_guides
+            WHERE equipment_id = ?
+            ORDER BY step_number ASC
+        ");
+        $stmt->execute([$equipment_id]);
+        
+        $steps = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $steps[] = [
+                'guide_id' => (int)$row['guide_id'],
+                'step_number' => (int)$row['step_number'],
+                'title' => $row['title'],
+                'description' => $row['description']
+            ];
+        }
+        
+        return $steps;
+    }
+    
+    // ✅ HELPER FUNCTION: Get rental terms
+    function getRentalTerms($pdo, $equipment_id) {
+        $stmt = $pdo->prepare("
+            SELECT term_id, category, term_text, display_order
+            FROM equipment_rental_terms
+            WHERE equipment_id = ?
+            ORDER BY display_order ASC
+        ");
+        $stmt->execute([$equipment_id]);
+        
+        $terms = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $terms[] = [
+                'term_id' => (int)$row['term_id'],
+                'category' => $row['category'],
+                'term_text' => $row['term_text'],
+                'display_order' => (int)$row['display_order']
+            ];
+        }
+        
+        return $terms;
+    }
+    
     $method = $_SERVER['REQUEST_METHOD'];
     
     switch($method) {
@@ -33,7 +100,7 @@ try {
             $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
             
             if ($id) {
-                // Get single equipment
+                // ✅ GET SINGLE EQUIPMENT WITH IMAGES
                 $stmt = $pdo->prepare("SELECT * FROM equipment WHERE equipment_id = ?");
                 $stmt->execute([$id]);
                 $equipment = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -54,19 +121,14 @@ try {
                         "reserved_stock" => 0,
                         "rented_stock" => 0,
                         "price_per_day" => (float)$equipment['price_per_day'],
-                        "condition" => $equipment['condition'] ?? 'baik', // ✅ FIXED: Hapus '_item'
+                        "condition" => $equipment['condition_item'] ?? 'baik',
                         "equipment_type" => $equipment['equipment_type'] ?? 'single',
-                        "image_url" => $equipment['image_url'] ?? null,
+                        "image_url" => $equipment['image_url'] ? 'http://localhost/PBL-KELANA-OUTDOOR' . $equipment['image_url'] : null,
+                        "images" => getEquipmentImages($pdo, $equipment['equipment_id']),
+                        "usage_guide" => getUsageGuide($pdo, $equipment['equipment_id']), // ✅ TAMBAH INI
+                        "rental_terms" => getRentalTerms($pdo, $equipment['equipment_id']), // ✅ TAMBAH INI
                         "created_at" => $equipment['created_at']
                     ];
-                    
-                    // ✅ FIXED: Format image URL properly
-                    if ($response['image_url']) {
-                        if (!str_starts_with($response['image_url'], 'http')) {
-                            $clean_path = ltrim($response['image_url'], '/');
-                            $response['image_url'] = 'http://localhost/PBL-KELANA-OUTDOOR/uploads/equipment/' . basename($clean_path);
-                        }
-                    }
                     
                     echo json_encode($response);
                 } else {
@@ -74,7 +136,7 @@ try {
                     echo json_encode(["error" => true, "message" => "Equipment not found"]);
                 }
             } else {
-                // Get all equipment
+                // ✅ GET ALL EQUIPMENT WITH IMAGES
                 $stmt = $pdo->prepare("SELECT * FROM equipment WHERE stock_quantity > 0 ORDER BY created_at DESC");
                 $stmt->execute();
                 $equipments = [];
@@ -95,19 +157,12 @@ try {
                         "reserved_stock" => 0,
                         "rented_stock" => 0,
                         "price_per_day" => (float)$row['price_per_day'],
-                        "condition" => $row['condition'] ?? 'baik', // ✅ FIXED: Hapus '_item'
+                        "condition" => $row['condition_item'] ?? 'baik',
                         "equipment_type" => $row['equipment_type'] ?? 'single',
-                        "image_url" => $row['image_url'] ?? null,
+                        "image_url" => $row['image_url'] ? 'http://localhost/PBL-KELANA-OUTDOOR' . $row['image_url'] : null,
+                        "images" => getEquipmentImages($pdo, $row['equipment_id']),
                         "created_at" => $row['created_at']
                     ];
-                    
-                    // ✅ FIXED: Format image URL properly
-                    if ($item['image_url']) {
-                        if (!str_starts_with($item['image_url'], 'http')) {
-                            $clean_path = ltrim($item['image_url'], '/');
-                            $item['image_url'] = 'http://localhost/PBL-KELANA-OUTDOOR/uploads/equipment/' . basename($clean_path);
-                        }
-                    }
                     
                     $equipments[] = $item;
                 }

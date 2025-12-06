@@ -54,7 +54,7 @@
 
 import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost/PBL%20-%20KELANA%20OUTDOOR/api'
+const API_BASE_URL = 'http://localhost/PBL-KELANA-OUTDOOR/api'
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

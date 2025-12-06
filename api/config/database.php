@@ -1,39 +1,37 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:5173");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Content-Type: application/json; charset=UTF-8");
-
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    exit(0);
-}
-
 class Database {
     private $host = "localhost";
-    private $db_name = "kuala_outdoor";  // SESUAIKAN dengan nama database Anda
+    private $db_name = "kuala_outdoor";
     private $username = "root";
     private $password = "";
     public $conn;
 
-    public function getConnection() {
+    // ✅ METHOD connect() YANG BENAR
+    public function connect() {
         $this->conn = null;
         
         try {
             $this->conn = new PDO(
                 "mysql:host=" . $this->host . ";dbname=" . $this->db_name,
                 $this->username,
-                $this->password
+                $this->password,
+                array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
             );
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            
+            // Set character set
             $this->conn->exec("set names utf8");
-        } catch(PDOException $exception) {
-            echo json_encode([
-                "success" => false,
-                "message" => "Connection error: " . $exception->getMessage()
-            ]);
+            
+        } catch(PDOException $e) {
+            error_log("Database Connection Error: " . $e->getMessage());
+            throw new Exception("Database connection failed: " . $e->getMessage());
         }
         
         return $this->conn;
+    }
+
+    // ✅ METHOD ALTERNATIVE JIKA PERLU
+    public function getConnection() {
+        return $this->connect();
     }
 }
 ?>

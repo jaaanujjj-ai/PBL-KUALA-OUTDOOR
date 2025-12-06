@@ -2441,16 +2441,16 @@ const TambahEquipment = () => {
     // ✅ PERBAIKAN: Pastikan path yang benar
     if (item.image_url.startsWith('/uploads/')) {
       // Path sudah lengkap dari root, tambahkan base URL
-      return `http://localhost/PBL - KELANA OUTDOOR${item.image_url}`;
+      return `http://localhost/PBL-KELANA-OUTDOOR${item.image_url}`;
     }
     
     if (item.image_url.startsWith('uploads/')) {
       // Path tanpa slash di depan
-      return `http://localhost/PBL - KELANA OUTDOOR/${item.image_url}`;
+      return `http://localhost/PBL-KELANA-OUTDOOR/${item.image_url}`;
     }
     
     // Jika hanya nama file saja
-    return `http://localhost/PBL - KELANA OUTDOOR/uploads/equipment/${item.image_url}`;
+    return `http://localhost/PBL-KELANA-OUTDOOR/uploads/equipment/${item.image_url}`;
   };
 
   // ✅ ENHANCED ERROR HANDLER - sama seperti di halaman lain

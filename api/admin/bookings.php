@@ -1,103 +1,103 @@
 <?php
-<?php
-header("Access-Control-Allow-Origin: http://localhost:5173");
+// filepath: api/admin/bookings.php
+header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-header("Access-Control-Allow-Headers: Content-Type");
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../config/database.php';
 
 try {
     $database = new Database();
     $db = $database->getConnection();
-    
+
     if (!$db) {
         throw new Exception("Database connection failed");
     }
-    
-    $method = $_SERVER['REQUEST_METHOD'];
-    
-    switch($method) {
-        case 'GET':
-            $query = "SELECT 
-                b.*,
-                c.name as customer_name,
-                c.phone as customer_phone, 
-                c.email as customer_email
-            FROM bookings b 
-            LEFT JOIN customers c ON b.customer_id = c.customer_id 
-            ORDER BY b.created_at DESC";
-            
-            $stmt = $db->prepare($query);
-            $stmt->execute();
-            
-            $bookings = array();
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                if (empty($row['equipment_name'])) {
-                    $row['equipment_name'] = "Equipment belum dipilih";
-                }
-                
-                $row['total_estimated_cost'] = (int)$row['total_estimated_cost'];
-                $row['estimated_duration'] = (int)$row['estimated_duration'];
-                
-                $bookings[] = $row;
-            }
-            
-            http_response_code(200);
-            echo json_encode($bookings);
-            break;
-            
-        case 'PUT':
-            $data = json_decode(file_get_contents("php://input"));
-            
-            if (empty($data->booking_id)) {
-                http_response_code(400);
-                echo json_encode(array("message" => "Booking ID is required"));
-                exit();
-            }
-            
-            $updates = array();
-            $params = array();
-            
-            if (isset($data->status)) {
-                $updates[] = "status = ?";
-                $params[] = $data->status;
-            }
-            
-            if (isset($data->payment_status)) {
-                $updates[] = "payment_status = ?";
-                $params[] = $data->payment_status;
-            }
-            
-            if (empty($updates)) {
-                http_response_code(400);
-                echo json_encode(array("message" => "No updates provided"));
-                exit();
-            }
-            
-            $query = "UPDATE bookings SET " . implode(", ", $updates) . " WHERE booking_id = ?";
-            $params[] = $data->booking_id;
-            
-            $stmt = $db->prepare($query);
-            
-            if ($stmt->execute($params)) {
-                http_response_code(200);
-                echo json_encode(array("message" => "Booking updated successfully"));
-            } else {
-                http_response_code(500);
-                echo json_encode(array("message" => "Unable to update booking"));
-            }
-            break;
-            
-        default:
-            http_response_code(405);
-            echo json_encode(array("message" => "Method not allowed"));
-            break;
+
+    // ✅ QUERY UNTUK GET BOOKINGS
+    $query = "SELECT b.* FROM bookings b ORDER BY b.created_at DESC";
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+    $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // ✅ AMBIL EQUIPMENT NAMES + PACKAGE NAMES TERPISAH
+    foreach ($bookings as &$booking) {
+        // EQUIPMENT
+        $equipmentQuery = "
+            SELECT e.name, bi.quantity
+            FROM booking_items bi
+            JOIN equipment e ON bi.equipment_id = e.equipment_id
+            WHERE bi.booking_id = ?
+        ";
+        $equipmentStmt = $db->prepare($equipmentQuery);
+        $equipmentStmt->execute([$booking['booking_id']]);
+        $equipmentItems = $equipmentStmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $equipmentNames = [];
+        foreach ($equipmentItems as $item) {
+            $equipmentNames[] = $item['name'] . ' (' . $item['quantity'] . 'x)';
+        }
+        $booking['equipment_names'] = !empty($equipmentNames) 
+            ? implode(', ', $equipmentNames) 
+            : '';
+
+        // ✅ PACKAGE
+        $packageQuery = "
+            SELECT ep.name, bi.quantity
+            FROM booking_items bi
+            JOIN equipment_packages ep ON bi.package_id = ep.package_id
+            WHERE bi.booking_id = ?
+        ";
+        $packageStmt = $db->prepare($packageQuery);
+        $packageStmt->execute([$booking['booking_id']]);
+        $packageItems = $packageStmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $packageNames = [];
+        foreach ($packageItems as $item) {
+            $packageNames[] = $item['name'] . ' (' . $item['quantity'] . 'x paket)';
+        }
+        $booking['package_names'] = !empty($packageNames) 
+            ? implode(', ', $packageNames) 
+            : '';
+
+        // ✅ GABUNGKAN UNTUK DISPLAY
+        $allItems = [];
+        if (!empty($booking['equipment_names'])) $allItems[] = $booking['equipment_names'];
+        if (!empty($booking['package_names'])) $allItems[] = $booking['package_names'];
+        
+        $booking['equipment_names'] = !empty($allItems) 
+            ? implode(', ', $allItems) 
+            : 'Tidak ada item';
+
+        // ✅ GET PACKAGE ITEMS DETAIL
+        if (!empty($packageItems)) {
+            $packageItemsQuery = "
+                SELECT pi.item_name, pi.quantity
+                FROM booking_items bi
+                JOIN equipment_packages ep ON bi.package_id = ep.package_id
+                JOIN package_items pi ON ep.package_id = pi.package_id
+                WHERE bi.booking_id = ?
+                ORDER BY pi.display_order
+            ";
+            $itemStmt = $db->prepare($packageItemsQuery);
+            $itemStmt->execute([$booking['booking_id']]);
+            $booking['package_items'] = $itemStmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $booking['package_items'] = [];
+        }
     }
-    
+
+    http_response_code(200);
+    echo json_encode([
+        'success' => true,
+        'data' => $bookings,
+        'total' => count($bookings)
+    ]);
+
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([

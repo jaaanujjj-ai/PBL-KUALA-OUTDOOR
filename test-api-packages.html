@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Package API</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .result { background: #f0f0f0; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e9; color: #2e7d32; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { overflow: auto; max-height: 400px; }
+    </style>
+</head>
+<body>
+    <h1>Test Package API</h1>
+    
+    <button onclick="testTables()">1. Test Tables Exist</button>
+    <button onclick="testGetPackages()">2. Test Get Packages</button>
+    <button onclick="testApiService()">3. Test API Service</button>
+    
+    <div id="result"></div>
+
+    <script>
+        const API_BASE = 'http://localhost/PBL-KELANA-OUTDOOR/api';
+        
+        function showResult(title, data, isError = false) {
+            const resultDiv = document.getElementById('result');
+            const className = isError ? 'result error' : 'result success';
+            resultDiv.innerHTML = `
+                <div class="${className}">
+                    <h3>${title}</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        async function testTables() {
+            try {
+                const response = await fetch(`${API_BASE}/packages/test_tables.php`);
+                const data = await response.json();
+                showResult('Test Tables Result', data, !data.success);
+            } catch (error) {
+                showResult('Test Tables Error', { error: error.message }, true);
+            }
+        }
+
+        async function testGetPackages() {
+            try {
+                const response = await fetch(`${API_BASE}/packages/get_packages.php`);
+                const data = await response.json();
+                showResult('Get Packages Result', data, !data.success);
+            } catch (error) {
+                showResult('Get Packages Error', { error: error.message }, true);
+            }
+        }
+
+        async function testApiService() {
+            try {
+                // Simulate what the frontend does
+                const response = await fetch(`${API_BASE}/packages/get_packages.php?sort_by=display_order`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('API Service Test Success', {
+                        success: true,
+                        packageCount: data.data.length,
+                        packages: data.data
+                    });
+                } else {
+                    showResult('API Service Test Failed', data, true);
+                }
+            } catch (error) {
+                showResult('API Service Test Error', { error: error.message }, true);
+            }
+        }
+    </script>
+</body>
+</html>
