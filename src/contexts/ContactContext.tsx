@@ -26,14 +26,12 @@ export const ContactProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [contactInfo, setContactInfo] = useState<ContactInfo>(defaultContactInfo);
   const [loading, setLoading] = useState(true);
 
-  // Load dari localStorage saat init
+  // Load dari localStorage saat init - PRIORITAS DEFAULT untuk force update nomor
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('contact_info');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        setContactInfo(parsed);
-      }
+      // ✅ ALWAYS USE DEFAULT (updated numbers) - ignore old localStorage
+      setContactInfo(defaultContactInfo);
+      localStorage.setItem('contact_info', JSON.stringify(defaultContactInfo));
     } catch (error) {
       console.error('Error loading contact info:', error);
       setContactInfo(defaultContactInfo);
