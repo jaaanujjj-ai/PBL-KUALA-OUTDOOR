@@ -14,9 +14,9 @@ interface ContactContextType {
 
 const ContactContext = createContext<ContactContextType | undefined>(undefined);
 
-// ✅ DEFAULT VALUES
+// ✅ DEFAULT VALUES (Updated from Admin Dashboard)
 const defaultContactInfo: ContactInfo = {
-  phone1: '089692854470',
+  phone1: '6281258599058',
   phone2: '082253446316',
   instagram: '@kuala_outdoor',
   address: 'Jl. K.H. Abdurrahman Wahid, Kuala Dua, Gg Jambu, No 78, Kab. Kubu Raya'

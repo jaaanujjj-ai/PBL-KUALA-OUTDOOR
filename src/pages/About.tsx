@@ -93,8 +93,8 @@ const About = () => (
                   <div>
                     <p className="font-medium text-gray-900">Telepon:</p>
                     <div className="space-y-1">
-                      <a href="tel:089692854470" className="text-blue-600 hover:underline block">
-                        📞 089692854470
+                      <a href="tel:+6281258599058" className="text-blue-600 hover:underline block">
+                        📞 +62 812-5859-9058
                       </a>
                       <a href="tel:082253446316" className="text-blue-600 hover:underline block">
                         📞 082253446316
