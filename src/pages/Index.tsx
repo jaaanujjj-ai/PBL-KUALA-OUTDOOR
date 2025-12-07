@@ -23,22 +23,22 @@ const Index = () => {
       <Navbar />
       
       {/* ✅ HERO SECTION - MENGGUNAKAN DATA DARI CONTEXT */}
-      <section className="relative h-[600px] flex items-center justify-center bg-gradient-to-r from-green-600 to-blue-600">
+      <section className="relative min-h-[500px] md:h-[600px] flex items-center justify-center bg-gradient-to-r from-green-600 to-blue-600 py-12 md:py-0">
         <div className="text-center px-4 max-w-5xl mx-auto text-white">
           {/* Brand Logo */}
-          <div className="mb-6">
-            <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
-              <Tent className="h-10 w-10 text-white" />
+          <div className="mb-4 md:mb-6">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+              <Tent className="h-8 w-8 md:h-10 md:w-10 text-white" />
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-2">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-2">
               KUALA OUTDOOR
             </h1>
-            <p className="text-xl md:text-2xl text-green-200 font-semibold mb-4">
+            <p className="text-lg md:text-xl lg:text-2xl text-green-200 font-semibold mb-3 md:mb-4">
               PENYEWAAN ALAT CAMPING & PENDAKIAN
             </p>
           </div>
           
-          <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto">
+          <p className="text-base md:text-lg lg:text-xl mb-6 md:mb-8 max-w-3xl mx-auto">
             🏕️ Solusi terpercaya untuk semua kebutuhan peralatan outdoor Anda! 
             Dari tenda, sleeping bag, hingga perlengkapan mendaki gunung.
           </p>
