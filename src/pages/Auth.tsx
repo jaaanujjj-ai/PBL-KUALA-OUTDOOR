@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Mountain, Loader2 } from "lucide-react";
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from "@/contexts/AuthContext";
+import { useContact } from "@/contexts/ContactContext";
 import { Button } from "@/components/ui/button";
 
 const Auth = () => {
@@ -11,6 +12,7 @@ const Auth = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const { signInWithGoogle } = useAuth();
+  const { contactInfo } = useContact();
   const navigate = useNavigate();
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
@@ -149,7 +151,7 @@ const Auth = () => {
               </div>
 
               <a 
-                href="https://wa.me/6289692854470?text=Halo%20Kuala%20Outdoor,%20saya%20ingin%20rental%20equipment"
+                href={`https://wa.me/${contactInfo.phone1.replace(/[^\d]/g, '')}?text=Halo%20Kuala%20Outdoor,%20saya%20ingin%20rental%20equipment`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block"
@@ -160,7 +162,7 @@ const Auth = () => {
               </a>
               
               <p className="text-center text-xs text-gray-500 mt-4">
-                📞 089692854470 • 082253446316<br />
+                📞 {contactInfo.phone1} • {contactInfo.phone2}<br />
                 <span className="text-green-600 font-medium">Melayani 24 jam (Fast Response)</span>
               </p>
             </div>

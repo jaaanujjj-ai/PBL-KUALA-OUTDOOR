@@ -154,13 +154,15 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Mountain, ShoppingCart, Shield, User, LogOut, UserCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useCart } from "@/contexts/CartContext"; // ✅ TAMBAH IMPORT INI
+import { useCart } from "@/contexts/CartContext";
+import { useContact } from "@/contexts/ContactContext";
 
 export const Navbar = () => {
   const { user, signOut } = useAuth();
-  const { getTotalItems } = useCart(); // ✅ TAMBAH INI
+  const { getTotalItems } = useCart();
+  const { contactInfo } = useContact();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // ✅ Mobile menu state
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <nav className="border-b bg-white shadow-sm sticky top-0 z-50">
@@ -266,7 +268,7 @@ export const Navbar = () => {
 
             {/* WHATSAPP */}
             <a
-              href="https://wa.me/6289692854470"
+              href={`https://wa.me/${contactInfo.phone1.replace(/[^\d]/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
             >
