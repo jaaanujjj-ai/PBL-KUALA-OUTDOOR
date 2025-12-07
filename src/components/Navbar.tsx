@@ -277,7 +277,62 @@ export const Navbar = () => {
           </div>
 
           {/* MOBILE MENU */}
-          <div className="md:hidden flex gap-1 relative">
+          <div className="md:hidden flex gap-1 items-center relative">
+            {/* Mobile Auth Button */}
+            {!user ? (
+              <Link to="/auth">
+                <Button variant="outline" size="sm" className="font-medium">
+                  <User className="h-4 w-4 md:mr-2" />
+                  <span className="hidden sm:inline">Masuk</span>
+                </Button>
+              </Link>
+            ) : (
+              <div className="relative">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="font-medium"
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                >
+                  <User className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline max-w-20 truncate">{user.name}</span>
+                </Button>
+
+                {/* Mobile User Dropdown */}
+                {dropdownOpen && (
+                  <div className="absolute right-0 top-12 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
+                    <Link
+                      to="/profile"
+                      onClick={() => setDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <UserCircle className="h-4 w-4" />
+                      Profil Saya
+                    </Link>
+                    <Link
+                      to="/bookings"
+                      onClick={() => setDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-t border-gray-100"
+                    >
+                      <ShoppingCart className="h-4 w-4" />
+                      Riwayat Booking
+                    </Link>
+                    <button
+                      onClick={() => {
+                        signOut();
+                        setDropdownOpen(false);
+                      }}
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors border-t border-gray-100"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Keluar
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Mobile Navigation Menu */}
             <Button 
               variant="outline" 
               size="sm" 
