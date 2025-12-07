@@ -14,8 +14,8 @@ interface ContactContextType {
 
 const ContactContext = createContext<ContactContextType | undefined>(undefined);
 
-// ✅ DEFAULT VALUES - Nomor Abang (Owner) - VERSION 2
-const CONTACT_VERSION = 'v2'; // ✅ Increment untuk force reset localStorage
+// ✅ DEFAULT VALUES - Nomor Abang (Owner) - VERSION 3 (FORCE RESET)
+const CONTACT_VERSION = 'v3_force_reset_' + Date.now(); // ✅ Unique version untuk FORCE reset semua user
 const defaultContactInfo: ContactInfo = {
   phone1: '6289692854470',
   phone2: '082253446316',
