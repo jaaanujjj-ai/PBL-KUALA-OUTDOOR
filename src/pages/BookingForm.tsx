@@ -176,7 +176,7 @@ const BookingForm = () => {
       .join('\n')
 
     return `
-*BOOKING KELANA OUTDOOR*
+*BOOKING KUALA OUTDOOR*
 
 *DATA PENYEWA:*
 • Nama: ${bookingData.customerName}
