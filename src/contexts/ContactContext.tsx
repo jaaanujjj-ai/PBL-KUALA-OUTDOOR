@@ -14,7 +14,8 @@ interface ContactContextType {
 
 const ContactContext = createContext<ContactContextType | undefined>(undefined);
 
-// ✅ DEFAULT VALUES - Nomor Abang (Owner)
+// ✅ DEFAULT VALUES - Nomor Abang (Owner) - VERSION 2
+const CONTACT_VERSION = 'v2'; // ✅ Increment untuk force reset localStorage
 const defaultContactInfo: ContactInfo = {
   phone1: '6289692854470',
   phone2: '082253446316',
@@ -26,11 +27,19 @@ export const ContactProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [contactInfo, setContactInfo] = useState<ContactInfo>(defaultContactInfo);
   const [loading, setLoading] = useState(true);
 
-  // ✅ PRIORITAS: localStorage (yang admin save) > default
+  // ✅ HARD RESET localStorage jika version berbeda
   useEffect(() => {
     try {
+      const savedVersion = localStorage.getItem('contact_version');
       const saved = localStorage.getItem('contact_info');
-      if (saved) {
+      
+      // ✅ FORCE RESET jika version berbeda atau tidak ada
+      if (savedVersion !== CONTACT_VERSION) {
+        console.log('🔄 RESET localStorage - version changed:', savedVersion, '->', CONTACT_VERSION);
+        setContactInfo(defaultContactInfo);
+        localStorage.setItem('contact_info', JSON.stringify(defaultContactInfo));
+        localStorage.setItem('contact_version', CONTACT_VERSION);
+      } else if (saved) {
         // ✅ GUNAKAN YANG DI localStorage (hasil save admin)
         const parsed = JSON.parse(saved);
         setContactInfo(parsed);
@@ -39,6 +48,7 @@ export const ContactProvider: React.FC<{ children: React.ReactNode }> = ({ child
         // ✅ KALAU BELUM ADA, GUNAKAN DEFAULT
         setContactInfo(defaultContactInfo);
         localStorage.setItem('contact_info', JSON.stringify(defaultContactInfo));
+        localStorage.setItem('contact_version', CONTACT_VERSION);
         console.log('✅ Set default contact:', defaultContactInfo.phone1);
       }
     } catch (error) {
@@ -51,8 +61,10 @@ export const ContactProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const updateContactInfo = (newInfo: ContactInfo) => {
     try {
+      console.log('💾 Saving new contact info:', newInfo.phone1);
       setContactInfo(newInfo);
       localStorage.setItem('contact_info', JSON.stringify(newInfo));
+      localStorage.setItem('contact_version', CONTACT_VERSION);
     } catch (error) {
       console.error('Error saving contact info:', error);
     }
