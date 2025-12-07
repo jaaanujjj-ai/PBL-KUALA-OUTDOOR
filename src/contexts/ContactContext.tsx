@@ -14,9 +14,9 @@ interface ContactContextType {
 
 const ContactContext = createContext<ContactContextType | undefined>(undefined);
 
-// ✅ DEFAULT VALUES (Updated Dec 7, 2025 - DO NOT CHANGE!)
+// ✅ DEFAULT VALUES - Nomor Abang (Owner)
 const defaultContactInfo: ContactInfo = {
-  phone1: '6281258599058',
+  phone1: '6289692854470',
   phone2: '082253446316',
   instagram: '@kuala_outdoor',
   address: 'Jl. K.H. Abdurrahman Wahid, Kuala Dua, Gg Jambu, No 78, Kab. Kubu Raya'
@@ -26,12 +26,16 @@ export const ContactProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [contactInfo, setContactInfo] = useState<ContactInfo>(defaultContactInfo);
   const [loading, setLoading] = useState(true);
 
-  // Load dari localStorage saat init - PRIORITAS DEFAULT untuk force update nomor
+  // Load dari localStorage saat init, fallback ke default
   useEffect(() => {
     try {
-      // ✅ ALWAYS USE DEFAULT (updated numbers) - ignore old localStorage
-      setContactInfo(defaultContactInfo);
-      localStorage.setItem('contact_info', JSON.stringify(defaultContactInfo));
+      const saved = localStorage.getItem('contact_info');
+      if (saved) {
+        setContactInfo(JSON.parse(saved));
+      } else {
+        setContactInfo(defaultContactInfo);
+        localStorage.setItem('contact_info', JSON.stringify(defaultContactInfo));
+      }
     } catch (error) {
       console.error('Error loading contact info:', error);
       setContactInfo(defaultContactInfo);
