@@ -244,14 +244,16 @@ Mohon konfirmasi ketersediaan dan detail pembayaran. Terima kasih!
         .filter((item: any) => item.cart_type === 'equipment' && item.equipment)
         .map((item: any) => ({
           equipment_id: item.equipment.equipment_id,
-          quantity: item.quantity || 1
+          quantity: item.quantity || 1,
+          price_per_day: item.equipment.price_per_day || 0
         }))
 
       const packageItems = cartItems
         .filter((item: any) => item.cart_type === 'package' && item.package_id)
         .map((item: any) => ({
           package_id: item.package_id,
-          quantity: item.quantity || 1
+          quantity: item.quantity || 1,
+          price_per_day: item.price_per_day || 0
         }))
 
       // ✅ DEBUG LOG
