@@ -19,6 +19,8 @@ const ContactManagement = () => {
   });
 
   useEffect(() => {
+    // ✅ Reset localStorage dan gunakan default terbaru
+    localStorage.removeItem('contact_info');
     setFormData(contactInfo);
   }, [contactInfo]);
 

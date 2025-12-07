@@ -14,7 +14,7 @@ interface ContactContextType {
 
 const ContactContext = createContext<ContactContextType | undefined>(undefined);
 
-// ✅ DEFAULT VALUES (Updated from Admin Dashboard)
+// ✅ DEFAULT VALUES (Updated Dec 7, 2025 - DO NOT CHANGE!)
 const defaultContactInfo: ContactInfo = {
   phone1: '6281258599058',
   phone2: '082253446316',
