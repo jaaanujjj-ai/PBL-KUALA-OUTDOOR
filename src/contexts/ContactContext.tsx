@@ -26,15 +26,20 @@ export const ContactProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [contactInfo, setContactInfo] = useState<ContactInfo>(defaultContactInfo);
   const [loading, setLoading] = useState(true);
 
-  // Load dari localStorage saat init, fallback ke default
+  // ✅ PRIORITAS: localStorage (yang admin save) > default
   useEffect(() => {
     try {
       const saved = localStorage.getItem('contact_info');
       if (saved) {
-        setContactInfo(JSON.parse(saved));
+        // ✅ GUNAKAN YANG DI localStorage (hasil save admin)
+        const parsed = JSON.parse(saved);
+        setContactInfo(parsed);
+        console.log('✅ Loaded contact from localStorage:', parsed.phone1);
       } else {
+        // ✅ KALAU BELUM ADA, GUNAKAN DEFAULT
         setContactInfo(defaultContactInfo);
         localStorage.setItem('contact_info', JSON.stringify(defaultContactInfo));
+        console.log('✅ Set default contact:', defaultContactInfo.phone1);
       }
     } catch (error) {
       console.error('Error loading contact info:', error);

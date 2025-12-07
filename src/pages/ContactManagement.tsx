@@ -24,8 +24,9 @@ const ContactManagement = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('💾 Saving contact info:', formData);
     updateContactInfo(formData);
-    alert('✅ Informasi kontak berhasil diperbarui!');
+    alert('✅ Informasi kontak berhasil diperbarui!\n\n📞 Primary: ' + formData.phone1 + '\n📞 Secondary: ' + formData.phone2);
   };
 
   const handleChange = (field: string, value: string) => {
