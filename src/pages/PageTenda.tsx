@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { useContact } from "@/contexts/ContactContext";
 import { 
   ArrowLeft, 
   Tent, 
@@ -16,6 +17,8 @@ import {
 } from "lucide-react";
 
 const TendaPage = () => {
+  const { contactInfo } = useContact();
+  
   // Sample data - nanti bisa diganti dengan API call
   const tendaItems = [
     {
@@ -179,7 +182,7 @@ const TendaPage = () => {
                   {/* Action Buttons */}
                   <div className="space-y-2">
                     <a 
-                      href={`https://wa.me/6289692854470?text=Halo%20Kuala%20Outdoor!%20Saya%20ingin%20rental%20${item.name}%20dengan%20harga%20Rp%20${item.price}%20per%20hari.%20Apakah%20masih%20tersedia?`}
+                      href={`https://wa.me/${contactInfo.phone1.replace(/[^\d]/g, '')}?text=Halo%20Kuala%20Outdoor!%20Saya%20ingin%20rental%20${item.name}%20dengan%20harga%20Rp%20${item.price}%20per%20hari.%20Apakah%20masih%20tersedia?`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block"
@@ -205,7 +208,7 @@ const TendaPage = () => {
                     </a>
                     
                     <a 
-                      href="https://wa.me/6289692854470?text=Halo%20Kuala%20Outdoor!%20Saya%20ingin%20konsultasi%20tentang%20tenda%20yang%20cocok%20untuk%20kebutuhan%20saya."
+                      href={`https://wa.me/${contactInfo.phone1.replace(/[^\d]/g, '')}?text=Halo%20Kuala%20Outdoor!%20Saya%20ingin%20konsultasi%20tentang%20tenda%20yang%20cocok%20untuk%20kebutuhan%20saya.`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block"
@@ -297,7 +300,7 @@ const TendaPage = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
-              href="https://wa.me/6289692854470?text=Halo%20Kuala%20Outdoor!%20Saya%20ingin%20konsultasi%20untuk%20memilih%20tenda%20yang%20cocok%20untuk%20kebutuhan%20saya."
+              href={`https://wa.me/${contactInfo.phone1.replace(/[^\d]/g, '')}?text=Halo%20Kuala%20Outdoor!%20Saya%20ingin%20konsultasi%20untuk%20memilih%20tenda%20yang%20cocok%20untuk%20kebutuhan%20saya.`}
               target="_blank"
               rel="noopener noreferrer"
             >

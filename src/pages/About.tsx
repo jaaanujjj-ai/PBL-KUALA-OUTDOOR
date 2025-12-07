@@ -3,8 +3,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Phone, MapPin, Clock, Users, Camera, Mountain, Tent } from 'lucide-react'
+import { useContact } from '@/contexts/ContactContext'
 
-const About = () => (
+const About = () => {
+  const { contactInfo } = useContact();
+  
+  return (
   <div className="min-h-screen bg-gray-50">
     <div className="container mx-auto px-4 py-8">
       {/* ✅ BACK TO HOME BUTTON */}
@@ -118,7 +122,7 @@ const About = () => (
 
               <div className="pt-4 border-t">
                 <a 
-                  href="https://wa.me/6289692854470?text=Halo Kuala Outdoor, saya ingin bertanya tentang rental equipment"
+                  href={`https://wa.me/${contactInfo.phone1.replace(/[^\d]/g, '')}?text=Halo Kuala Outdoor, saya ingin bertanya tentang rental equipment`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block"
@@ -240,7 +244,7 @@ const About = () => (
                 </Link>
                 
                 <a 
-                  href="https://wa.me/6289692854470?text=Halo Kuala Outdoor, saya ingin konsultasi tentang equipment outdoor"
+                  href={`https://wa.me/${contactInfo.phone1.replace(/[^\d]/g, '')}?text=Halo Kuala Outdoor, saya ingin konsultasi tentang equipment outdoor`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -255,6 +259,7 @@ const About = () => (
       </div>
     </div>
   </div>
-)
+  )
+}
 
 export default About
