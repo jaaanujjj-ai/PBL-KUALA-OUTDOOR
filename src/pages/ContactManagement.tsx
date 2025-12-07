@@ -4,37 +4,39 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Save, Phone, MapPin, Instagram } from 'lucide-react';
+import { ArrowLeft, Save, Phone, MapPin, Instagram, Lock } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 
+// ✅ DEFAULT VALUES - LOCKED (Cannot be changed via admin panel)
+const LOCKED_CONTACT_INFO = {
+  phone1: '6281258599058',
+  phone2: '082253446316',
+  instagram: '@kuala_outdoor',
+  address: 'Jl. K.H. Abdurrahman Wahid, Kuala Dua, Gg Jambu, No 78, Kab. Kubu Raya'
+};
+
 const ContactManagement = () => {
-  const { contactInfo, updateContactInfo } = useContact();
+  const { contactInfo } = useContact();
   const navigate = useNavigate();
   
-  const [formData, setFormData] = useState({
-    phone1: '',
-    phone2: '',
-    instagram: '',
-    address: ''
-  });
+  const [formData, setFormData] = useState(LOCKED_CONTACT_INFO);
 
   useEffect(() => {
-    // ✅ Reset localStorage dan gunakan default terbaru
+    // ✅ FORCE gunakan LOCKED values, abaikan localStorage
     localStorage.removeItem('contact_info');
-    setFormData(contactInfo);
-  }, [contactInfo]);
+    localStorage.setItem('contact_info', JSON.stringify(LOCKED_CONTACT_INFO));
+    setFormData(LOCKED_CONTACT_INFO);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateContactInfo(formData);
-    alert('✅ Informasi kontak berhasil diperbarui!');
+    // ✅ PREVENT admin dari overwriting dengan nomor salah
+    alert('⚠️ Nomor kontak sudah DIKUNCI oleh sistem.\n\nNomor yang digunakan:\n• Primary: 6281258599058\n• Secondary: 082253446316\n\nJika perlu mengubah, hubungi developer.');
   };
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    // ✅ DISABLE editing - form is READ ONLY
+    alert('⚠️ Nomor kontak DIKUNCI! Tidak bisa diubah melalui admin panel.');
   };
 
   // ✅ TAMBAHKAN LOADING STATE
@@ -71,7 +73,13 @@ const ContactManagement = () => {
         <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Edit Informasi Kontak</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Lock className="h-5 w-5 text-yellow-600" />
+                  Informasi Kontak (DIKUNCI)
+                </CardTitle>
+                <p className="text-sm text-gray-500 mt-2">
+                  ⚠️ Nomor kontak tidak dapat diubah melalui admin panel untuk mencegah kesalahan. Jika perlu mengubah, hubungi developer.
+                </p>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -87,6 +95,8 @@ const ContactManagement = () => {
                       onChange={(e) => handleChange('phone1', e.target.value)}
                       placeholder="Contoh: 089692854470"
                       required
+                      disabled
+                      className="bg-gray-100 cursor-not-allowed"
                     />
                   </div>
 
@@ -102,6 +112,8 @@ const ContactManagement = () => {
                       onChange={(e) => handleChange('phone2', e.target.value)}
                       placeholder="Contoh: 082253446316"
                       required
+                      disabled
+                      className="bg-gray-100 cursor-not-allowed"
                     />
                   </div>
 
@@ -116,6 +128,8 @@ const ContactManagement = () => {
                       value={formData.instagram}
                       onChange={(e) => handleChange('instagram', e.target.value)}
                       placeholder="Contoh: @kuala_outdoor"
+                      disabled
+                      className="bg-gray-100 cursor-not-allowed"
                       required
                     />
                   </div>
@@ -131,14 +145,19 @@ const ContactManagement = () => {
                       value={formData.address}
                       onChange={(e) => handleChange('address', e.target.value)}
                       placeholder="Masukkan alamat lengkap..."
-                      className="w-full border rounded-lg px-3 py-2 min-h-[100px] resize-y focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full border rounded-lg px-3 py-2 min-h-[100px] resize-y focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-100 cursor-not-allowed"
                       required
+                      disabled
                     />
                   </div>
 
-                  <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">
-                    <Save className="h-4 w-4 mr-2" />
-                    Simpan Perubahan
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-gray-400 hover:bg-gray-500 cursor-not-allowed"
+                    disabled
+                  >
+                    <Lock className="h-4 w-4 mr-2" />
+                    DIKUNCI - Tidak Dapat Diubah
                   </Button>
                 </form>
               </CardContent>
