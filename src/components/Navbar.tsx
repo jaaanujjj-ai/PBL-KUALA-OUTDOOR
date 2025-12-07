@@ -160,6 +160,7 @@ export const Navbar = () => {
   const { user, signOut } = useAuth();
   const { getTotalItems } = useCart(); // ✅ TAMBAH INI
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // ✅ Mobile menu state
 
   return (
     <nav className="border-b bg-white shadow-sm sticky top-0 z-50">
@@ -276,12 +277,49 @@ export const Navbar = () => {
           </div>
 
           {/* MOBILE MENU */}
-          <div className="md:hidden flex gap-1">
-            <Link to="/browse">
-              <Button variant="outline" size="sm" className="font-medium">
-                Menu
-              </Button>
-            </Link>
+          <div className="md:hidden flex gap-1 relative">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="font-medium"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              Menu
+            </Button>
+
+            {/* Mobile Menu Dropdown */}
+            {mobileMenuOpen && (
+              <div className="absolute right-0 top-12 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
+                <Link
+                  to="/browse"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-100"
+                >
+                  🎒 Lihat Peralatan
+                </Link>
+                <Link
+                  to="/packages"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-100"
+                >
+                  📦 Paket Rental
+                </Link>
+                <Link
+                  to="/trips"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-100"
+                >
+                  🏔️ Trip Seru
+                </Link>
+                <Link
+                  to="/about"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  ℹ️ Tentang Kami
+                </Link>
+              </div>
+            )}
             {/* ADMIN LINK HIDDEN - Access via /admin-secret-login */}
           </div>
         </div>
